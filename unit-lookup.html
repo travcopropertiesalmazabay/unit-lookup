@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بحث عن مالك الوحدة</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #eef2f7;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px 60px;
+}
+.container { width: 100%; max-width: 620px; }
+.header { text-align: center; margin-bottom: 28px; }
+.logo {
+  width: 58px; height: 58px;
+  background: linear-gradient(135deg, #1a6eb5, #0d4a80);
+  border-radius: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 16px rgba(26,110,181,0.3);
+}
+.logo svg { width: 28px; height: 28px; fill: white; }
+h1 { font-size: 24px; font-weight: 700; color: #0d2a45; margin-bottom: 5px; }
+.subtitle { color: #7a8da0; font-size: 13px; }
+
+/* Login */
+#loginScreen { display: block; }
+.login-card {
+  background: white; border-radius: 20px;
+  padding: 36px 28px; box-shadow: 0 2px 18px rgba(0,0,0,0.08); text-align: center;
+}
+.lock-icon { font-size: 42px; margin-bottom: 16px; }
+.login-title { font-size: 18px; font-weight: 700; color: #0d2a45; margin-bottom: 6px; }
+.login-sub { font-size: 13px; color: #7a8da0; margin-bottom: 24px; }
+#passwordInput {
+  width: 100%; padding: 13px 16px;
+  border: 2px solid #e2e8f0; border-radius: 12px;
+  font-size: 16px; font-family: inherit;
+  direction: ltr; text-align: center; letter-spacing: 3px;
+  outline: none; transition: border-color 0.2s; margin-bottom: 12px;
+}
+#passwordInput:focus { border-color: #1a6eb5; }
+#loginBtn {
+  width: 100%; padding: 14px;
+  background: #1a6eb5; color: white; border: none;
+  border-radius: 12px; font-size: 16px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: background 0.2s;
+}
+#loginBtn:hover { background: #155d9a; }
+.login-error { color: #e53e3e; font-size: 13px; margin-top: 10px; display: none; }
+.login-error.visible { display: block; }
+
+/* App */
+#appScreen { display: none; }
+.card {
+  background: white; border-radius: 20px;
+  padding: 26px 24px; box-shadow: 0 2px 18px rgba(0,0,0,0.07); margin-bottom: 16px;
+}
+.step { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.step-num {
+  width: 26px; height: 26px; background: #1a6eb5; border-radius: 50%;
+  color: white; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.step-label { font-size: 13px; font-weight: 600; color: #3d5166; }
+select {
+  width: 100%; padding: 13px 16px;
+  border: 2px solid #e2e8f0; border-radius: 12px;
+  font-size: 15px; font-family: inherit; color: #1a202c;
+  background: white; cursor: pointer; outline: none; transition: border-color 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7a8d' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 12px center; padding-left: 38px;
+}
+select:focus { border-color: #1a6eb5; }
+.input-row { display: flex; gap: 10px; margin-bottom: 6px; }
+#unitInput {
+  flex: 1; padding: 13px 16px;
+  border: 2px solid #e2e8f0; border-radius: 12px;
+  font-size: 16px; font-family: inherit;
+  direction: ltr; text-align: left; outline: none; color: #1a202c; transition: border-color 0.2s;
+}
+#unitInput:focus { border-color: #1a6eb5; }
+#unitInput::placeholder { color: #a0aec0; }
+#unitInput:disabled { background: #f7fafc; color: #a0aec0; cursor: not-allowed; }
+#searchBtn {
+  padding: 13px 22px; background: #1a6eb5; color: white; border: none;
+  border-radius: 12px; font-size: 15px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: background 0.2s, transform 0.1s; white-space: nowrap;
+}
+#searchBtn:hover { background: #155d9a; }
+#searchBtn:active { transform: scale(0.97); }
+#searchBtn:disabled { background: #a0aec0; cursor: not-allowed; }
+
+.suggest-box {
+  border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden;
+  display: none; margin-top: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); background: white;
+}
+.suggest-box.visible { display: block; }
+.suggest-item {
+  padding: 11px 16px; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid #f7fafc; transition: background 0.1s; direction: ltr;
+}
+.suggest-item:last-child { border-bottom: none; }
+.suggest-item:hover, .suggest-item.active { background: #ebf8ff; }
+.suggest-unit { font-weight: 700; color: #1a6eb5; min-width: 72px; font-size: 15px; }
+.suggest-name { color: #4a5568; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Result card */
+.result-card {
+  background: white; border-radius: 20px;
+  box-shadow: 0 2px 18px rgba(0,0,0,0.07); overflow: hidden;
+  display: none; margin-bottom: 16px;
+}
+.result-card.visible { display: block; }
+.result-top {
+  background: linear-gradient(135deg, #1a6eb5, #0d4a80);
+  padding: 22px 24px; color: white;
+}
+.result-proj { font-size: 12px; opacity: 0.75; margin-bottom: 4px; }
+.result-unit { font-size: 26px; font-weight: 700; direction: ltr; letter-spacing: 1px; }
+.result-body { padding: 20px 24px; }
+.owner-ar { font-size: 20px; font-weight: 700; color: #0d2a45; margin-bottom: 4px; line-height: 1.4; }
+.owner-en { font-size: 13px; color: #718096; direction: ltr; }
+.divider { height: 1px; background: #f0f4f8; margin: 16px 0; }
+.meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.meta-label { font-size: 11px; color: #a0aec0; font-weight: 600; margin-bottom: 3px; }
+.meta-value { font-size: 14px; color: #4a5568; font-weight: 500; }
+
+/* Permit section */
+.permit-section { margin-top: 16px; }
+.permit-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.permit-header-icon { font-size: 16px; }
+.permit-header-title { font-size: 14px; font-weight: 700; color: #0d2a45; }
+.permit-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #f0fff4; border: 1.5px solid #9ae6b4;
+  color: #276749; border-radius: 10px;
+  padding: 8px 14px; font-size: 14px; font-weight: 600;
+  width: 100%;
+}
+.permit-badge.no-permit {
+  background: #fff5f5; border-color: #fed7d7; color: #9b2c2c;
+}
+.permit-badge.multiple {
+  display: block; background: #ebf8ff; border-color: #90cdf4; color: #2c5282;
+}
+.permit-item {
+  padding: 8px 12px;
+  border-bottom: 1px solid #bee3f8;
+  font-size: 13px; color: #2c5282;
+  direction: ltr;
+}
+.permit-item:last-child { border-bottom: none; }
+.permit-count {
+  font-size: 11px; background: #2b6cb0; color: white;
+  border-radius: 10px; padding: 2px 8px; margin-right: 6px;
+}
+
+/* Not found */
+.not-found {
+  text-align: center; padding: 24px; background: white;
+  border-radius: 20px; box-shadow: 0 2px 18px rgba(0,0,0,0.07);
+  display: none; margin-bottom: 16px;
+}
+.not-found.visible { display: block; }
+.not-found-icon { font-size: 38px; margin-bottom: 10px; }
+.not-found h3 { color: #e53e3e; margin-bottom: 6px; font-size: 16px; }
+.not-found p { color: #718096; font-size: 13px; }
+
+.stats-bar {
+  display: flex; align-items: center; justify-content: space-between; padding: 10px 4px;
+}
+.stats-text { font-size: 12px; color: #a0aec0; }
+.refresh-btn {
+  background: none; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 5px 12px; font-size: 12px; color: #718096;
+  cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 5px; transition: all 0.2s;
+}
+.refresh-btn:hover { border-color: #1a6eb5; color: #1a6eb5; }
+
+.loading-overlay {
+  text-align: center; padding: 32px; background: white;
+  border-radius: 20px; box-shadow: 0 2px 18px rgba(0,0,0,0.07); margin-bottom: 16px;
+}
+.spinner {
+  width: 36px; height: 36px; border: 3px solid #e2e8f0;
+  border-top-color: #1a6eb5; border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 14px; color: #718096; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </div>
+    <h1>بحث عن مالك الوحدة</h1>
+    <p class="subtitle">Almaza Bay · Bay Homes · Beachtown · One Almaza Bay · The Selection</p>
+  </div>
+
+  <!-- Login -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="lock-icon">🔐</div>
+      <div class="login-title">أدخل كلمة المرور</div>
+      <div class="login-sub">هذا النظام مخصص للاستخدام الداخلي فقط</div>
+      <input type="password" id="passwordInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()" />
+      <button id="loginBtn" onclick="doLogin()">دخول</button>
+      <div class="login-error" id="loginError">❌ كلمة المرور غلط، حاول تاني</div>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="appScreen">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+      <div class="loading-text">جاري تحميل البيانات من Google Sheets...</div>
+    </div>
+
+    <div class="card" id="step1Card" style="display:none">
+      <div class="step"><div class="step-num">1</div><div class="step-label">اختار المشروع</div></div>
+      <select id="projectSelect" onchange="onProjectChange()">
+        <option value="">— اختر المشروع —</option>
+      </select>
+    </div>
+
+    <div class="card" id="step2Card" style="display:none">
+      <div class="step"><div class="step-num">2</div><div class="step-label">ادخل رقم الوحدة</div></div>
+      <div class="input-row">
+        <input type="text" id="unitInput" placeholder="اختر المشروع أولاً"
+               autocomplete="off" disabled
+               oninput="onUnitInput()" onkeydown="onKey(event)" />
+        <button id="searchBtn" onclick="doSearch()" disabled>بحث</button>
+      </div>
+      <div class="suggest-box" id="suggestBox"></div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-card" id="resultCard">
+      <div class="result-top">
+        <div class="result-proj" id="resProject"></div>
+        <div class="result-unit" id="resUnit"></div>
+      </div>
+      <div class="result-body">
+        <div class="owner-ar" id="resNameAr"></div>
+        <div class="owner-en" id="resNameEn"></div>
+        <div class="divider"></div>
+        <div class="meta">
+          <div class="meta-item">
+            <div class="meta-label">المشروع</div>
+            <div class="meta-value" id="resProjectMeta"></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">رقم الوحدة</div>
+            <div class="meta-value" id="resUnitMeta" style="direction:ltr"></div>
+          </div>
+        </div>
+
+        <!-- Permit Section -->
+        <div class="permit-section">
+          <div class="permit-header">
+            <span class="permit-header-icon">📋</span>
+            <span class="permit-header-title">تصريح الأمن</span>
+          </div>
+          <div id="permitContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="not-found" id="notFound">
+      <div class="not-found-icon">🔍</div>
+      <h3>الوحدة مش موجودة</h3>
+      <p id="notFoundMsg">تأكد من رقم الوحدة وحاول تاني</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stats-text" id="statsLine"></div>
+      <button class="refresh-btn" onclick="loadData()">↻ تحديث البيانات</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbzaO1dSKTioO-hGv0ZGIU_waD6oZZF6CnAIAaBy1XsGMcljd4QgGaZkfl14QeQj7x3D/exec';
+const PASSWORD = "abay2026";
+
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + (days*24*60*60*1000));
+  document.cookie = name + "=" + value + ";expires=" + d.toUTCString() + ";path=/;SameSite=Strict";
+}
+function getCookie(name) {
+  const ca = document.cookie.split(';');
+  for(let c of ca) {
+    c = c.trim();
+    if (c.startsWith(name + "=")) return c.substring(name.length + 1);
+  }
+  return "";
+}
+
+// Check if already logged in
+if (getCookie("auth") === "1" || localStorage.getItem("auth") === "1") {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("appScreen").style.display = "block";
+  loadData();
+}
+
+let PROJECTS = {};
+let PERMITS = [];
+let currentProject = null;
+let currentMatches = [];
+let highlightIdx = -1;
+
+function doLogin() {
+  const val = document.getElementById('passwordInput').value;
+  if (val === PASSWORD) {
+    setCookie("auth", "1", 30);
+    localStorage.setItem("auth", "1");
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('loginError').classList.add('visible');
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
+  }
+}
+
+async function loadData() {
+  document.getElementById('loadingOverlay').style.display = 'block';
+  document.getElementById('step1Card').style.display = 'none';
+  document.getElementById('step2Card').style.display = 'none';
+  clearResults();
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    // Build projects from units
+    PROJECTS = {};
+    (data.units || []).forEach(row => {
+      const unit = String(row.unit || '').trim();
+      const name_en = String(row.name_en || '').trim();
+      const name_ar = String(row.name_ar || '').trim();
+      if (!unit) return;
+      const parts = unit.split(' ');
+      const unitNum = parts[0];
+      const proj = parts.slice(1).join(' ');
+      if (!proj) return;
+      if (!PROJECTS[proj]) PROJECTS[proj] = [];
+      PROJECTS[proj].push({ unit: unitNum, name_en, name_ar });
+    });
+
+    // Store permits
+    PERMITS = (data.permits || []).map(p => ({
+      unit: String(p.unit || '').trim(),
+      name_en: String(p.name_en || '').trim(),
+      name_ar: String(p.name_ar || '').trim(),
+      permit: String(p.permit || '').trim(),
+      date_start: String(p.date_start || '').trim(),
+      date_end: String(p.date_end || '').trim()
+    }));
+
+    populateProjects();
+    const totalUnits = (data.units || []).length;
+    const totalPermits = PERMITS.length;
+    document.getElementById('statsLine').textContent =
+      'وحدات: ' + totalUnits.toLocaleString('ar-EG') +
+      ' · تصاريح: ' + totalPermits.toLocaleString('ar-EG') +
+      ' · ' + new Date().toLocaleTimeString('ar-EG');
+
+    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('step1Card').style.display = 'block';
+    document.getElementById('step2Card').style.display = 'block';
+
+  } catch(e) {
+    document.getElementById('loadingOverlay').innerHTML =
+      '<div style="font-size:36px;margin-bottom:12px">⚠️</div>' +
+      '<div style="color:#e53e3e;font-weight:600;margin-bottom:8px">فشل تحميل البيانات</div>' +
+      '<div style="color:#718096;font-size:13px;margin-bottom:16px">تأكد من الاتصال بالإنترنت</div>' +
+      '<button onclick="loadData()" style="padding:10px 20px;background:#1a6eb5;color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit">إعادة المحاولة</button>';
+  }
+}
+
+function populateProjects() {
+  const sel = document.getElementById('projectSelect');
+  sel.innerHTML = '<option value="">— اختر المشروع —</option>';
+  Object.keys(PROJECTS).forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p + '  (' + PROJECTS[p].length + ' وحدة)';
+    sel.appendChild(opt);
+  });
+}
+
+function onProjectChange() {
+  const val = document.getElementById('projectSelect').value;
+  currentProject = val || null;
+  const input = document.getElementById('unitInput');
+  const btn = document.getElementById('searchBtn');
+  input.value = '';
+  input.disabled = !val;
+  btn.disabled = !val;
+  if (val) {
+    const samples = PROJECTS[val].slice(0,3).map(u=>u.unit).join(' / ');
+    input.placeholder = 'مثال: ' + samples;
+    input.focus();
+  } else {
+    input.placeholder = 'اختر المشروع أولاً';
+  }
+  clearResults();
+  hideSuggestions();
+}
+
+function onUnitInput() {
+  const q = document.getElementById('unitInput').value.trim();
+  clearResults();
+  if (!currentProject || q.length === 0) { hideSuggestions(); return; }
+  const units = PROJECTS[currentProject];
+  const qUp = q.toUpperCase().replace(/\s+/g,'');
+  const matches = units.filter(u => u.unit.toUpperCase().replace(/\s+/g,'').includes(qUp));
+  if (matches.length > 0 && matches.length <= 12) showSuggestions(matches);
+  else hideSuggestions();
+}
+
+function showSuggestions(matches) {
+  currentMatches = matches;
+  highlightIdx = -1;
+  const box = document.getElementById('suggestBox');
+  box.innerHTML = '';
+  matches.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'suggest-item';
+    const nameDisplay = m.name_ar && m.name_ar !== 'nan' ? m.name_ar : (m.name_en || '—');
+    div.innerHTML = '<span class="suggest-unit">' + m.unit + '</span><span class="suggest-name">' + nameDisplay + '</span>';
+    div.onclick = () => pickSuggestion(m);
+    box.appendChild(div);
+  });
+  box.classList.add('visible');
+}
+
+function hideSuggestions() {
+  const box = document.getElementById('suggestBox');
+  box.classList.remove('visible');
+  box.innerHTML = '';
+  currentMatches = [];
+  highlightIdx = -1;
+}
+
+function pickSuggestion(m) {
+  document.getElementById('unitInput').value = m.unit;
+  hideSuggestions();
+  showResult(m);
+}
+
+function onKey(e) {
+  const items = document.querySelectorAll('.suggest-item');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    highlightIdx = Math.min(highlightIdx + 1, items.length - 1);
+    items.forEach((el,i) => el.classList.toggle('active', i===highlightIdx));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    highlightIdx = Math.max(highlightIdx - 1, -1);
+    items.forEach((el,i) => el.classList.toggle('active', i===highlightIdx));
+  } else if (e.key === 'Enter') {
+    if (highlightIdx >= 0 && currentMatches[highlightIdx]) pickSuggestion(currentMatches[highlightIdx]);
+    else doSearch();
+  } else if (e.key === 'Escape') {
+    hideSuggestions();
+  }
+}
+
+function doSearch() {
+  if (!currentProject) return;
+  const q = document.getElementById('unitInput').value.trim();
+  if (!q) return;
+  hideSuggestions();
+  const units = PROJECTS[currentProject];
+  const qUp = q.toUpperCase().replace(/\s+/g,'');
+  let match = units.find(u => u.unit.toUpperCase().replace(/\s+/g,'') === qUp);
+  if (!match) {
+    const partials = units.filter(u => u.unit.toUpperCase().replace(/\s+/g,'').includes(qUp));
+    if (partials.length === 1) match = partials[0];
+  }
+  if (match) showResult(match);
+  else {
+    clearResults();
+    document.getElementById('notFound').classList.add('visible');
+    document.getElementById('notFoundMsg').textContent = 'مفيش وحدة "' + q + '" في ' + currentProject;
+  }
+}
+
+function getPermits(unitNum, project) {
+  // full unit string like "A01 Almaza Bay Residences"
+  const fullUnit = (unitNum + ' ' + project).toLowerCase().replace(/\s+/g,' ').trim();
+  return PERMITS.filter(p => {
+    const pu = p.unit.toLowerCase().replace(/\s+/g,' ').trim();
+    return pu === fullUnit || pu === unitNum.toLowerCase().trim();
+  });
+}
+
+function showResult(m) {
+  clearResults();
+  document.getElementById('resProject').textContent = currentProject;
+  document.getElementById('resUnit').textContent = m.unit;
+  document.getElementById('resNameAr').textContent = (m.name_ar && m.name_ar !== 'nan') ? m.name_ar : '—';
+  document.getElementById('resNameEn').textContent = (m.name_en && m.name_en !== 'nan') ? m.name_en : '';
+  document.getElementById('resProjectMeta').textContent = currentProject;
+  document.getElementById('resUnitMeta').textContent = m.unit;
+
+  // Permits
+  const permits = getPermits(m.unit, currentProject);
+  const permitDiv = document.getElementById('permitContent');
+  if (permits.length === 0) {
+    permitDiv.innerHTML = '<div class="permit-badge no-permit">⛔ لا يوجد تصريح مسجل</div>';
+  } else {
+    const today = new Date(); today.setHours(0,0,0,0);
+    let html = '';
+    permits.forEach(p => {
+      const permitText = p.permit && p.permit !== 'nan' ? p.permit : '—';
+      // Split by semicolon for multiple permits in one cell
+      const permitLines = permitText.split(';').map(s => s.trim()).filter(s => s);
+      
+      // Parse dates
+      function parseDate(str) {
+        if (!str || str === 'nan') return null;
+        const parts = str.split('/');
+        if (parts.length === 3) {
+          const d = parseInt(parts[0]), m = parseInt(parts[1]) - 1, y = parseInt(parts[2]);
+          return new Date(y, m, d);
+        }
+        return new Date(str);
+      }
+      let status = 'active';
+      let dateLabel = '';
+      if (p.date_start || p.date_end) {
+        const start = p.date_start ? parseDate(p.date_start) : null;
+        const end = p.date_end ? parseDate(p.date_end) : null;
+        if (end) end.setHours(23,59,59,0);
+        
+        if (end && today > end) {
+          status = 'expired';
+        } else if (start && today < start) {
+          status = 'pending';
+        } else {
+          status = 'active';
+        }
+        
+        if (p.date_start && p.date_end) {
+          dateLabel = ' <span style="font-size:11px;opacity:0.8">' + p.date_start + ' → ' + p.date_end + '</span>';
+        } else if (p.date_end) {
+          dateLabel = ' <span style="font-size:11px;opacity:0.8">حتى ' + p.date_end + '</span>';
+        }
+      }
+      
+      const icon = status === 'expired' ? '🔴' : status === 'pending' ? '⏳' : '✅';
+      const statusLabel = status === 'expired' ? ' <span style="color:#e53e3e;font-size:12px;font-weight:700">منتهي</span>' : status === 'pending' ? ' <span style="color:#d69e2e;font-size:12px;font-weight:700">لم يبدأ بعد</span>' : '';
+      const bgColor = status === 'expired' ? 'background:#fff5f5;border-color:#fed7d7' : status === 'pending' ? 'background:#fffff0;border-color:#faf089' : 'background:#f0fff4;border-color:#9ae6b4';
+      const textColor = status === 'expired' ? 'color:#9b2c2c' : status === 'pending' ? 'color:#744210' : 'color:#276749';
+      
+      permitLines.forEach(line => {
+        html += '<div class="permit-badge" style="' + bgColor + ';' + textColor + ';margin-bottom:6px">' +
+          icon + ' <strong>' + line + '</strong>' + statusLabel + dateLabel +
+          '</div>';
+      });
+    });
+    permitDiv.innerHTML = html || '<div class="permit-badge no-permit">⛔ لا يوجد تصريح مسجل</div>';
+  }
+
+  document.getElementById('resultCard').classList.add('visible');
+}
+
+function clearResults() {
+  document.getElementById('resultCard').classList.remove('visible');
+  document.getElementById('notFound').classList.remove('visible');
+}
+</script>
+</body>
+</html>
