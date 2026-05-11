@@ -1,0 +1,18 @@
+{
+  "name": "Almaza Bay Permits",
+  "short_name": "AB Permits",
+  "description": "Almaza Bay Unit Lookup & Permits System",
+  "start_url": "/unit-lookup/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a7abf",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
